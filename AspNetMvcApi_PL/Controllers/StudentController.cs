@@ -20,29 +20,64 @@ namespace AspNetMVCApi_PL.Controllers
             _studentService = studentService;
         }
 
-
-        // GET api/<controller>
+        // GET s --> prefix var böyle çağrılır
+        // GET api/student/GetAllStudents
         [System.Web.Http.Route("")]
         public ResponseData GetAllStudents()
         {
             try
             {
                 var result = _studentService.GetAllStudents().Data;
-                return new ResponseData() {IsSuccess=true, Data=result};
-            } 
+                return new ResponseData() { IsSuccess = true, Data = result };
+            }
             catch (Exception ex)
             {
                 // ex loglanabilir
                 return new ResponseData()
                 {
-                    IsSuccess=false,
-                    Message=ex.Message
+                    IsSuccess = false,
+                    Message = ex.Message
                 };
             }
         }
-        
+
 
         // GET api/<controller>/5
+
+        //öğrenci ekleme
+        [HttpPost]
+        [System.Web.Http.Route("")]
+
+        public ResponseData AddStudent([FromBody]StudentVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResponseData()
+                    {
+                        IsSuccess = false,
+                        Message = "Veri girişleri düzgün olmalıdır!"
+                    };
+                }
+                model.RegisterDate = DateTime.Now;
+                ResponseData result = _studentService.AddStudent(model);
+                return new ResponseData()
+                {
+                    IsSuccess = true,
+                    Message = "Yeni öğrenci kaydı yapılmıştır."
+                };
+            }
+            catch (Exception ex)
+            {
+                // ex loglanabilir
+                return new ResponseData()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
 
         // POST api/<controller>
 
